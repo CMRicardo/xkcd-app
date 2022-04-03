@@ -1,21 +1,20 @@
-import { Footer } from "components/Footer"
-import { Header } from "components/Header"
 import { Layout } from "components/Layout"
+import { useI18N } from "context/i18n"
 import fs from 'fs/promises'
 import Head from "next/head"
 import Image from "next/image"
 import Link from "next/link"
 
 export default function Home ({ latestComics }) {
+  const { t } = useI18N()
   return (
     <>
       <Head>
-        <title>XKCD | Comics for developers</title>
         <meta name="description" content="Comics for developers" />
       </Head>
       <Layout>
 
-        <h2 className="text-4xl font-bold text-center" >Latest Comics</h2>
+        <h2 className="text-4xl font-bold text-center" >{t('HOME_TITLE')}</h2>
         <section className="max-w-3xl m-auto grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3" >
           {
             latestComics.map(comic => {
@@ -49,7 +48,6 @@ export async function getStaticProps (context) {
     return JSON.parse(content)
   })
   const latestComics = await Promise.all(promisesReadFiles)
-  console.log(latestComics);
 
   return {
     props: {

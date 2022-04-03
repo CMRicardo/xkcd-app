@@ -1,14 +1,17 @@
 import Link from "next/link"
+import { useRouter } from "next/router"
 import { useState, useRef } from "react"
 
 export function Header () {
   const [results, setResults] = useState([])
   const searchRef = useRef()
+  const { locale, locales } = useRouter()
+
   const getValue = () => searchRef.current?.value
 
   const handleChange = () => {
     const q = getValue()
-    console.log(q);
+
     if (!q) return [];
     fetch(`/api/search?q=${q}`)
       .then(res => res.json())
@@ -16,6 +19,8 @@ export function Header () {
         setResults(searchResults)
       })
   }
+
+  const restOfLocales = locales.filter(l => l !== locale)
 
   return (
     <header className="flex justify-evenly items-center py-4 max-w-xl m-auto" >
@@ -32,6 +37,11 @@ export function Header () {
             <Link href="/" ><a className="text-sm font-semibold">Home</a></Link>
           </li>
           <li className="m-0" >
+            <Link href='/' locale={restOfLocales[0]} >
+              <a className="text-sm font-semibold">{restOfLocales[0]}</a>
+            </Link>
+          </li>
+          <li className="m-0" >
             <input
               ref={searchRef}
               type="text"
@@ -42,7 +52,7 @@ export function Header () {
               {
                 Boolean(results.length) && <div className="absolute top-0 left-0" >
                   <ul className="w-full border-2 border-slate-300 rounded shadow-xl bg-white overflow-hidden" >
-                    <Link href={`/search?q=/${getValue()}`} >
+                    <Link href={`/search?q=${getValue()}`} >
                       <a
                         className="text-sm font-semibold text-ellipsis px-2 py-1 whitespace-nowrap rounded hover:bg-slate-200 w-full text-gray-600 italic"
                       >
